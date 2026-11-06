@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { cacheLife } from "next/cache";
 import { SITE_URL } from "../data/seo";
 import { navLinks } from "../data/content";
 import { getProjects } from "../lib/portfolio";
@@ -6,10 +7,12 @@ import { getProjects } from "../lib/portfolio";
 // Harus sama dengan nama folder route detail: app/project/[slug]
 const PROJECT_BASE_PATH = "/project";
 
-// Sitemap dibuat ulang paling cepat tiap 1 jam
-export const revalidate = 3600;
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Hasil di-cache, lalu disegarkan di latar belakang kira-kira tiap 1 jam.
+  // Pengganti `export const revalidate` yang tidak kompatibel dengan cacheComponents.
+  "use cache";
+  cacheLife("hours");
 
-export default function sitemap(): MetadataRoute.Sitemap {
   // Ikut menu navbar: href dibuang bagian #anchor-nya (Google mengabaikan #fragment),
   // lalu digabung kalau path-nya sama. Jadi menu baru di navLinks otomatis masuk sitemap.
   const paths = [
