@@ -31,6 +31,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+.env.local
 .env*
 
 # vercel
@@ -39,3 +40,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+fix_images.py
+migrate.py
+list_tables.py
+lbwwkyvcnrdnmcxxkizj.storage.zip
+db_cluster-02-11-2026@21-35-13.backup.gz
+
+*.db
+*.db.bak
+*.db-journal
+*.db-wal
+*.db-shm

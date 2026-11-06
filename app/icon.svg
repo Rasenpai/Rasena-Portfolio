@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Rasena">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5b4dff" />
+      <stop offset="1" stop-color="#b04dff" />
+    </linearGradient>
+  </defs>
+
+  <!-- Latar: kotak bulat dengan gradien tema (solid, tidak transparan) -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)" />
+
+  <!-- Huruf R (digambar sebagai path, jadi tidak bergantung font) -->
+  <path
+    transform="translate(-16 0)"
+    fill="#ffffff"
+    fill-rule="evenodd"
+    d="M160 128 H284 C344 128 384 164 384 218 C384 258 362 286 326 298 L392 384 H318 L260 304 H224 V384 H160 Z
+       M224 184 V252 H280 C306 252 320 240 320 218 C320 196 306 184 280 184 Z"
+  />
+</svg>

@@ -1,26 +1,294 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-bg: #07061a;
+  --color-ink: #f5f3ff;
+  --color-muted: #aaa6bd;
+  --color-line: #29263a;
+  --color-accent: #b58aff;
+  --color-accent2: #7c5cff;
+  --color-mint: #7ce3bd;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-blink: blink 1s steps(2, start) infinite;
+  --animate-pop: pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-rise: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-wave: wave 1.1s ease-in-out infinite;
+
+  @keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.5) translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes wave {
+    0%,
+    100% {
+      transform: scaleY(0.25);
+    }
+    50% {
+      transform: scaleY(1);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    /* Glow latar: ungu kiri atas, biru kanan atas, biru kiri bawah, ungu kanan bawah.
+       Dipakai bersama oleh body dan splash screen */
+    --page-glow:
+      radial-gradient(
+        ellipse 55% 50% at 12% 12%,
+        rgba(124, 58, 237, 0.18),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 50% 45% at 90% 8%,
+        rgba(14, 90, 170, 0.17),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 50% 50% at 14% 92%,
+        rgba(30, 64, 175, 0.2),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 45% 45% at 88% 95%,
+        rgba(124, 58, 237, 0.15),
+        transparent 70%
+      );
+
+    /* Grid latar */
+    --grid-size: 26px;
+    --grid-color: rgba(124, 92, 255, 0.05);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 86px;
+  }
+
+  body {
+    @apply bg-bg font-sans text-base leading-[1.65] text-ink;
+  }
+
+  /* Glow menempel di layar (fixed), di belakang grid, blob kursor, dan konten */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -20;
+    pointer-events: none;
+    background-image: var(--page-glow);
+    background-repeat: no-repeat;
+  }
+
+  /* Latar kotak-kotak: menempel di layar, memudar ke tepi,
+     di belakang semua konten dan tidak bisa diklik */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    -webkit-mask-image: radial-gradient(
+      ellipse at 50% 35%,
+      #000 25%,
+      transparent 85%
+    );
+    mask-image: radial-gradient(ellipse at 50% 35%, #000 25%, transparent 85%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* ---------- Scrollbar ---------- */
+/* Chrome, Edge, Safari desktop. Jangan set scrollbar-width/scrollbar-color di sini,
+   karena Chrome baru akan mengabaikan semua aturan ::-webkit-scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #07061a;
+}
+::-webkit-scrollbar-thumb {
+  border: 2px solid #07061a;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(91, 77, 255, 0.55),
+    rgba(176, 77, 255, 0.55)
+  );
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(124, 109, 255, 0.8),
+    rgba(196, 109, 255, 0.8)
+  );
+}
+
+/* Firefox saja */
+@supports (-moz-appearance: none) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 92, 255, 0.55) #07061a;
+  }
+}
+
+/* ---------- Splash screen ---------- */
+.splash {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  background-image: var(--page-glow);
+  background-repeat: no-repeat;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+html[data-splash="on"] .splash {
+  display: flex;
+  /* pengaman: kalau JS gagal jalan, splash tetap hilang sendiri */
+  animation: splash-failsafe 0s 8s forwards;
+}
+.splash.is-leaving {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+@keyframes splash-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- Reveal on scroll ---------- */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reveal-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes reveal-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal.is-in {
+  animation-name: reveal-up;
+  animation-duration: 0.75s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-reveal="left"].is-in {
+  animation-name: reveal-left;
+}
+.reveal[data-reveal="right"].is-in {
+  animation-name: reveal-right;
+}
+.reveal[data-reveal="zoom"].is-in {
+  animation-name: reveal-zoom;
+}
+
+/* ---------- Baris terminal muncul satu per satu ---------- */
+@keyframes term-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.term-line {
+  opacity: 0;
+}
+.is-in .term-line {
+  animation: term-in 0.4s ease both;
+  animation-delay: calc(700ms + var(--i, 0) * 160ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal,
+  .term-line {
+    opacity: 1 !important;
+  }
 }
